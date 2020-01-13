@@ -203,7 +203,7 @@ registerPlugin({
         if (member == client.uid()) {
           return;
         }
-        backend.getClientByUID(member).chat(`[${currentActiveGroup}] ${client.name()}: ${message}`);
+        backend.getClientByUID(member).chat(`[${currentActiveGroup}] [URL=${client.getURL()}]${client.name()}[/URL]: ${message}`);
       });
       return true;
     }
