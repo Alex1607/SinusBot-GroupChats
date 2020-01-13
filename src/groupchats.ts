@@ -80,8 +80,8 @@ registerPlugin({
           return;
         }
         leavegroup(client, name);
-        reply(`You have leavt ${name}!`);
-        sendGroupMessage(client, " has leavt the group!");
+        reply(`You have left ${name}!`);
+        sendGroupMessage(client, " has left the group!");
       });
 
     createCommand("changegroup")
