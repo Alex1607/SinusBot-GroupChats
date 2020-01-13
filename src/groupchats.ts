@@ -27,7 +27,9 @@ registerPlugin({
           reply("Incorrect usage. Please use: !creategroup <name>");
           return;
         }
+
         let name = args[0];
+
         if (GROUPS[name] != undefined) {
           reply(`This group name is already in use. You can join the group with !joingroup ${name}`);
           return;
@@ -36,6 +38,7 @@ registerPlugin({
         GROUPS[name] = {
           "members": []
         };
+        
         joingroup(client, name);
         reply(`Group ${name} was created successfully. Others can join with: !joingroup ${name}`);
       });
@@ -48,11 +51,14 @@ registerPlugin({
           reply("Incorrect usage. Please use: !joingroup <name>");
           return;
         }
+
         let name = args[0];
+
         if (GROUPS[name] == undefined) {
           reply(`This group dosnt exist. Use: !creategroup ${name} to create it.`);
           return;
         }
+
         joingroup(client, name);
         reply(`You have joined ${name}!`);
         sendGroupMessage(client, " has joined the group!");
@@ -66,11 +72,14 @@ registerPlugin({
           reply("Incorrect usage. Please use: !leavegroup <name>");
           return;
         }
+
         let name = args[0];
+
         if (!(GROUPUSERS[client.uniqueId()].groups).includes(name)) {
           reply(`No need to leave that group. You arent in this group.`);
           return;
         }
+
         leavegroup(client, name);
         reply(`You have left ${name}!`);
         sendGroupMessage(client, " has left the group!");
@@ -84,7 +93,9 @@ registerPlugin({
           reply("Incorrect usage. Please use: !changegroup <name>");
           return;
         }
+
         let name = args[0];
+
         if (GROUPS[name] == undefined) {
           reply(`This group dosnt exist.`);
           return;
