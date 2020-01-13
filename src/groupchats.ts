@@ -38,7 +38,7 @@ registerPlugin({
         GROUPS[name] = {
           "members": []
         };
-        
+
         joingroup(client, name);
         reply(`Group ${name} was created successfully. Others can join with: !joingroup ${name}`);
       });
@@ -56,6 +56,12 @@ registerPlugin({
 
         if (GROUPS[name] == undefined) {
           reply(`This group dosnt exist. Use: !creategroup ${name} to create it.`);
+          return;
+        }
+
+        let groups: [string] = GROUPUSERS[client.uniqueId()].groups;
+        if (groups.includes(name)) {
+          reply("You are already in this group.")
           return;
         }
 
