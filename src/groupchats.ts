@@ -16,15 +16,7 @@ registerPlugin({
   const { createCommand } = require("command");
   const event = require("event");
   const GROUPS: any = {};
-  const GROUPUSERS: any = {
-    "clientID": {
-      "active": "name2",
-      "groups": [
-        "name1",
-        "name2"
-      ]
-    }
-  };
+  const GROUPUSERS: any = {};
 
   event.on("load", () => {
     createCommand("creategroup")
