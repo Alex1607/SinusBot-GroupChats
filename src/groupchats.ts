@@ -52,17 +52,23 @@ registerPlugin({
     command.createCommand("joingroup")
       .help("Join a group")
       .manual("joingroup [name] adds you to a group and makes this group the active chat group for you")
-      .exec((client, args, reply) => {
-        if (args.lenght() != 1) {
+      .addArgument(command.createArgument("string").setName("name"))
+      .exec((client, { name }, reply) => {
+        if (name == "") {
           reply("Incorrect usage. Please use: !joingroup <name>");
           return;
         }
 
-        let name = args[0];
-
         if (GROUPS[name] == undefined) {
           reply(`This group dosnt exist. Use: !creategroup ${name} to create it.`);
           return;
+        }
+
+        if (GROUPUSERS[client.uid()] == undefined) {
+          GROUPUSERS[client.uid()] = {
+            "active": "",
+            "groups": []
+          };
         }
 
         let groups: [any] = GROUPUSERS[client.uid()].groups;
@@ -86,13 +92,19 @@ registerPlugin({
     command.createCommand("leavegroup")
       .help("Leaves a group")
       .manual("leavegroup [name] will remove you from the group.")
-      .exec((client, args, reply) => {
-        if (args.lenght() != 1) {
+      .addArgument(command.createArgument("string").setName("name"))
+      .exec((client, { name }, reply) => {
+        if (name == "") {
           reply("Incorrect usage. Please use: !leavegroup <name>");
           return;
         }
 
-        let name = args[0];
+        if (GROUPUSERS[client.uid()] == undefined) {
+          GROUPUSERS[client.uid()] = {
+            "active": "",
+            "groups": []
+          };
+        }
 
         if (!(GROUPUSERS[client.uid()].groups).includes(name)) {
           reply(`No need to leave that group. You arent in this group.`);
@@ -107,17 +119,23 @@ registerPlugin({
     command.createCommand("changegroup")
       .help("Changes your active chat group.")
       .manual("Changes your active chat group. Your active chat group is the group in which your messages are displayed.")
-      .exec((client, args, reply) => {
-        if (args.lenght() != 1) {
+      .addArgument(command.createArgument("string").setName("name"))
+      .exec((client, { name }, reply) => {
+        if (name == "") {
           reply("Incorrect usage. Please use: !changegroup <name>");
           return;
         }
 
-        let name = args[0];
-
         if (GROUPS[name] == undefined) {
           reply(`This group dosnt exist.`);
           return;
+        }
+
+        if (GROUPUSERS[client.uid()] == undefined) {
+          GROUPUSERS[client.uid()] = {
+            "active": "",
+            "groups": []
+          };
         }
 
         let groups: [any] = GROUPUSERS[client.uid()].groups;
@@ -132,9 +150,7 @@ registerPlugin({
 
     event.on("chat", (event) => {
       setTimeout(() => {
-        engine.log(JSON.stringify(event));
-        return;
-        if (event.client === backend.getBotClient()) {
+        if (event.client.uid() === backend.getBotClient().uid()) {
           engine.log("Bot");
           return;
         }
