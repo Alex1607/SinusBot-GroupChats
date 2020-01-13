@@ -20,16 +20,16 @@ registerPlugin({
 
   event.on("load", () => {
     createCommand("creategroup")
-      .help("Creates a new group which everyone is allowed to join")
-      .manual("creategroup [name] will create a new group, if the name dosnt exist yet. Everyone on the server will then be able to join this group.")
+      .help("Creates a new group that anyone can join.")
+      .manual("creategroup <name> creates a new group as long as the name does not yet exist. Everyone on the server can then join it.")
       .exec((client, args, reply) => {
         if (args.lenght() != 1) {
-          reply("Wrong command syntax! Correct usage: !creategroup <name>");
+          reply("Incorrect usage. Please use: !creategroup <name>");
           return;
         }
         let name = args[0];
         if (GROUPS[name] != undefined) {
-          reply(`This groupname is already in use, if you want to join it use: !joingroup ${name}`);
+          reply(`This group name is already in use. You can join the group with !joingroup ${name}`);
           return;
         }
         //Group dosnt exist yet -> create group
@@ -37,15 +37,15 @@ registerPlugin({
           "members": []
         };
         joingroup(client, name);
-        reply(`Group ${name} was created successfully. Others can now join using: !joingroup ${name}`);
+        reply(`Group ${name} was created successfully. Others can join with: !joingroup ${name}`);
       });
 
     createCommand("joingroup")
-      .help("Joines a group")
-      .manual("joingroup [name] will add you to the group and set it to you current active chat.")
+      .help("Join a group")
+      .manual("joingroup [name] adds you to a group and makes this group the active chat group for you")
       .exec((client, args, reply) => {
         if (args.lenght() != 1) {
-          reply("Wrong command syntax! Correct usage: !joingroup <name>");
+          reply("Incorrect usage. Please use: !joingroup <name>");
           return;
         }
         let name = args[0];
@@ -63,7 +63,7 @@ registerPlugin({
       .manual("leavegroup [name] will remove you from the group.")
       .exec((client, args, reply) => {
         if (args.lenght() != 1) {
-          reply("Wrong command syntax! Correct usage: !leavegroup <name>");
+          reply("Incorrect usage. Please use: !leavegroup <name>");
           return;
         }
         let name = args[0];
@@ -77,11 +77,11 @@ registerPlugin({
       });
 
     createCommand("changegroup")
-      .help("Changes you current group in which your chat messages will be shown")
-      .manual("changegroup [name] will switch your current active chat.")
+      .help("Changes your active chat group.")
+      .manual("Changes your active chat group. Your active chat group is the group in which your messages are displayed.")
       .exec((client, args, reply) => {
         if (args.lenght() != 1) {
-          reply("Wrong command syntax! Correct usage: !changegroup <name>");
+          reply("Incorrect usage. Please use: !changegroup <name>");
           return;
         }
         let name = args[0];
