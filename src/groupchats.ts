@@ -99,6 +99,11 @@ registerPlugin({
           return;
         }
 
+        if(GROUPS[name] == undefined) {
+          reply(`That group dosnt exist.`);
+          return;
+        }
+
         if (GROUPUSERS[client.uid()] == undefined) {
           GROUPUSERS[client.uid()] = {
             "active": "",
@@ -151,11 +156,9 @@ registerPlugin({
     event.on("chat", (event) => {
       setTimeout(() => {
         if (event.client.uid() === backend.getBotClient().uid()) {
-          engine.log("Bot");
           return;
         }
         if ((event.text).startsWith(engine.getCommandPrefix())) {
-          engine.log("Prefix");
           return;
         }
         if (GROUPUSERS[(event.client).uid()] == undefined) {
@@ -201,6 +204,9 @@ registerPlugin({
       let groupmembers: [string] = GROUPS[currentActiveGroup].members;
       groupmembers.forEach(member => {
         if (member == client.uid()) {
+          return;
+        }
+        if(backend.getClientByUID(member) == undefined) {
           return;
         }
         backend.getClientByUID(member).chat(`[${currentActiveGroup}] [URL=${client.getURL()}]${client.name()}[/URL]: ${message}`);
