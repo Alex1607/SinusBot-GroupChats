@@ -99,7 +99,7 @@ registerPlugin({
           return;
         }
 
-        if(GROUPS[name] == undefined) {
+        if (GROUPS[name] == undefined) {
           reply(`That group dosnt exist.`);
           return;
         }
@@ -153,9 +153,21 @@ registerPlugin({
         reply(`You are now chatting in ${name}`);
       });
 
+    command.createCommand("listgroups")
+      .help("Lists all the current groups.")
+      .manual("Shows which groups currently exist and how many users are currently in them. (No distinction is made between online and offline users)")
+      .exec((client, args, reply) => {
+        let keys: [string] = GROUPS.keys();
+        let tempString: string = "";
+        keys.forEach(key => {
+          tempString += `- ${key} (${(GROUPS[key].members).length}) \n`;
+        });
+        reply(`Available Groups: ${tempString}`);
+      });
+
     event.on("chat", (event) => {
       setTimeout(() => {
-        if (event.client.uid() === backend.getBotClient().uid()) {
+        if (event.client.isSelf()) {
           return;
         }
         if ((event.text).startsWith(engine.getCommandPrefix())) {
@@ -206,7 +218,7 @@ registerPlugin({
         if (member == client.uid()) {
           return;
         }
-        if(backend.getClientByUID(member) == undefined) {
+        if (backend.getClientByUID(member) == undefined) {
           return;
         }
         backend.getClientByUID(member).chat(`[${currentActiveGroup}] [URL=${client.getURL()}]${client.name()}[/URL]: ${message}`);
