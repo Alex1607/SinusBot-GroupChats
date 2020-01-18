@@ -149,6 +149,11 @@ registerPlugin({
           return;
         }
 
+        if (GROUPUSERS[client.uid()].active == name) {
+          reply(`You are already chatting in this group.`);
+          return;
+        }
+
         setactive(client, name);
         reply(`You are now chatting in ${name}`);
       });
