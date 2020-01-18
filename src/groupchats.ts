@@ -167,12 +167,15 @@ registerPlugin({
         keys.forEach(key => {
           tempString += `- ${key} (${(GROUPS[key].members).length}) \n`;
         });
-        reply(`Available Groups: ${tempString}`);
+        reply(`Available Groups:\n${tempString}`);
       });
 
     event.on("chat", (event) => {
       setTimeout(() => {
         if (event.client.isSelf()) {
+          return;
+        }
+        if (event.mode !== 1) {
           return;
         }
         if ((event.text).startsWith(engine.getCommandPrefix())) {
