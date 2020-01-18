@@ -157,7 +157,7 @@ registerPlugin({
       .help("Lists all the current groups.")
       .manual("Shows which groups currently exist and how many users are currently in them. (No distinction is made between online and offline users)")
       .exec((client, args, reply) => {
-        let keys: [string] = GROUPS.keys();
+        let keys: string[] = Object.keys(GROUPS);
         let tempString: string = "";
         keys.forEach(key => {
           tempString += `- ${key} (${(GROUPS[key].members).length}) \n`;
