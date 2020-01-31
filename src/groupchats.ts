@@ -16,7 +16,32 @@ registerPlugin({
   const engine = require("engine");
   const backend = require("backend");
   const GROUPS: any = {};
+  const GROUPLIST: [] = [];
   const GROUPUSERS: any = {};
+
+  class group {
+
+    private _members: Client[] = [];
+    private _name: string;
+
+    constructor(name: string) {
+      this.name = name;
+    }
+
+    public get name(): string {
+      return this._name;
+    }
+    public set name(value: string) {
+      this._name = value;
+    }
+
+    public get members(): Client[] {
+      return this._members;
+    }
+    public set members(value: Client[]) {
+      this._members = value;
+    }
+  }
 
   event.on("load", () => {
     command.createCommand("creategroup")
@@ -29,14 +54,12 @@ registerPlugin({
           return;
         }
 
-        if (GROUPS[name] != undefined) {
+        if (GROUPS.some((element: group) => { return element.name == name })) {
           reply(`This group name is already in use. You can join the group with !joingroup ${name}`);
           return;
         }
-        
-        GROUPS[name] = {
-          "members": []
-        };
+
+        GROUPS.push(new group(name));
 
         if (GROUPUSERS[client.uid()] == undefined) {
           GROUPUSERS[client.uid()] = {
@@ -59,7 +82,7 @@ registerPlugin({
           return;
         }
 
-        if (GROUPS[name] == undefined) {
+        if (GROUPS.some((element: group) => { return element.name == name })) {
           reply(`This group dosnt exist. Use: !creategroup ${name} to create it.`);
           return;
         }
@@ -77,13 +100,6 @@ registerPlugin({
           return;
         }
 
-        if (GROUPUSERS[client.uid()] == undefined) {
-          GROUPUSERS[client.uid()] = {
-            "active": "",
-            "groups": []
-          }
-        }
-
         joinGroup(client, name);
         reply(`You have joined ${name}!`);
         sendGroupMessage(client, " has joined the group!");
@@ -99,7 +115,7 @@ registerPlugin({
           return;
         }
 
-        if (GROUPS[name] == undefined) {
+        if (!GROUPS.some((element: group) => { return element.name == name })) {
           reply(`That group dosnt exist.`);
           return;
         }
@@ -131,7 +147,7 @@ registerPlugin({
           return;
         }
 
-        if (GROUPS[name] == undefined) {
+        if (!GROUPS.some((element: group) => { return element.name == name })) {
           reply(`This group dosnt exist.`);
           return;
         }
@@ -191,21 +207,21 @@ registerPlugin({
       }, 500);
     });
 
-    function joinGroup(client: Client, groupname: string) {
-      (GROUPS[groupname].members).push(client.uid())
+    function joinGroup(client: Client, tempGroup: group) {
+      tempGroup.members.push(client);
 
-      GROUPUSERS[client.uid()].active = groupname;
-      (GROUPUSERS[client.uid()].groups).push(groupname);
+      GROUPUSERS[client.uid()].active = tempGroup.name;
+      (GROUPUSERS[client.uid()].groups).push(tempGroup.name);
     }
 
-    function leaveGroup(client: Client, groupname: string) {
-      let groupsindex = (GROUPS[groupname].members).indexOf(client.uid());
+    function leaveGroup(client: Client, tempGroup: group) {
+      let groupsindex = (tempGroup.members).indexOf(client);
       if (groupsindex > -1) {
-        (GROUPS[groupname].members).splice(groupsindex, 1);
+        (tempGroup.members).splice(groupsindex, 1);
       }
 
       GROUPUSERS[client.uid()].active = undefined;
-      let usersindex = (GROUPUSERS[client.uid()]).indexOf(groupname);
+      let usersindex = (GROUPUSERS[client.uid()]).indexOf(tempGroup.name);
       if (usersindex > -1) {
         (GROUPUSERS[client.uid()]).splice(usersindex, 1);
       }
@@ -221,17 +237,15 @@ registerPlugin({
         return false;
       }
       let currentActiveGroup: string = GROUPUSERS[client.uid()].active;
-      let groupmembers: [string] = GROUPS[currentActiveGroup].members;
+      let groupmembers: Client[] = getGroupByName(currentActiveGroup).members;
       groupmembers.forEach(member => {
-        if (member == client.uid()) {
-          return;
-        }
-        if (backend.getClientByUID(member) == undefined) {
-          return;
-        }
-        backend.getClientByUID(member).chat(`[${currentActiveGroup}] [URL=${client.getURL()}]${client.name()}[/URL]: ${message}`);
+        member.chat(`[${currentActiveGroup}] [URL=${client.getURL()}]${client.name()}[/URL]: ${message}`);
       });
       return true;
     }
   });
+
+  function getGroupByName(name: string): group {
+    return GROUPS.some((element: group) => { return element.name === name });
+  }
 });
