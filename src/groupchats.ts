@@ -33,7 +33,7 @@ registerPlugin({
           reply(`This group name is already in use. You can join the group with !joingroup ${name}`);
           return;
         }
-        //Group dosnt exist yet -> create group
+        
         GROUPS[name] = {
           "members": []
         };
@@ -45,7 +45,7 @@ registerPlugin({
           }
         }
 
-        joingroup(client, name);
+        joinGroup(client, name);
         reply(`Group ${name} was created successfully. Others can join with: !joingroup ${name}`);
       });
 
@@ -84,7 +84,7 @@ registerPlugin({
           }
         }
 
-        joingroup(client, name);
+        joinGroup(client, name);
         reply(`You have joined ${name}!`);
         sendGroupMessage(client, " has joined the group!");
       });
@@ -116,7 +116,7 @@ registerPlugin({
           return;
         }
 
-        leavegroup(client, name);
+        leaveGroup(client, name);
         reply(`You have left ${name}!`);
         sendGroupMessage(client, " has left the group!");
       });
@@ -154,7 +154,7 @@ registerPlugin({
           return;
         }
 
-        setactive(client, name);
+        setActive(client, name);
         reply(`You are now chatting in ${name}`);
       });
 
@@ -191,14 +191,14 @@ registerPlugin({
       }, 500);
     });
 
-    function joingroup(client: Client, groupname: string) {
+    function joinGroup(client: Client, groupname: string) {
       (GROUPS[groupname].members).push(client.uid())
 
       GROUPUSERS[client.uid()].active = groupname;
       (GROUPUSERS[client.uid()].groups).push(groupname);
     }
 
-    function leavegroup(client: Client, groupname: string) {
+    function leaveGroup(client: Client, groupname: string) {
       let groupsindex = (GROUPS[groupname].members).indexOf(client.uid());
       if (groupsindex > -1) {
         (GROUPS[groupname].members).splice(groupsindex, 1);
@@ -211,7 +211,7 @@ registerPlugin({
       }
     }
 
-    function setactive(client: Client, groupname: string) {
+    function setActive(client: Client, groupname: string) {
       GROUPUSERS[client.uid()].active = groupname;
     }
 
