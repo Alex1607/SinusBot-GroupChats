@@ -217,7 +217,7 @@ registerPlugin({
 
     function sendGroupMessage(client: Client, message: string) {
       if (GROUPUSERS[client.uid()].active == undefined) {
-        //TODO: Send Info message
+        client.chat("Your have currently not selected a group.")
         return false;
       }
       let currentActiveGroup: string = GROUPUSERS[client.uid()].active;
