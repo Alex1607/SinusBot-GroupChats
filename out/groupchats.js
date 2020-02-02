@@ -26,7 +26,6 @@ registerPlugin({
                 reply(`This group name is already in use. You can join the group with !joingroup ${name}`);
                 return;
             }
-            //Group dosnt exist yet -> create group
             GROUPS[name] = {
                 "members": []
             };
@@ -36,7 +35,7 @@ registerPlugin({
                     "groups": []
                 };
             }
-            joingroup(client, name);
+            joinGroup(client, name);
             reply(`Group ${name} was created successfully. Others can join with: !joingroup ${name}`);
         });
         command.createCommand("joingroup")
@@ -69,7 +68,7 @@ registerPlugin({
                     "groups": []
                 };
             }
-            joingroup(client, name);
+            joinGroup(client, name);
             reply(`You have joined ${name}!`);
             sendGroupMessage(client, " has joined the group!");
         });
@@ -96,7 +95,7 @@ registerPlugin({
                 reply(`No need to leave that group. You arent in this group.`);
                 return;
             }
-            leavegroup(client, name);
+            leaveGroup(client, name);
             reply(`You have left ${name}!`);
             sendGroupMessage(client, " has left the group!");
         });
@@ -128,7 +127,7 @@ registerPlugin({
                 reply(`You are already chatting in this group.`);
                 return;
             }
-            setactive(client, name);
+            setActive(client, name);
             reply(`You are now chatting in ${name}`);
         });
         command.createCommand("listgroups")
@@ -147,6 +146,9 @@ registerPlugin({
                 if (event.client.isSelf()) {
                     return;
                 }
+                if (event.mode !== 1) {
+                    return;
+                }
                 if ((event.text).startsWith(engine.getCommandPrefix())) {
                     return;
                 }
@@ -159,12 +161,12 @@ registerPlugin({
                 sendGroupMessage(event.client, event.text);
             }, 500);
         });
-        function joingroup(client, groupname) {
+        function joinGroup(client, groupname) {
             (GROUPS[groupname].members).push(client.uid());
             GROUPUSERS[client.uid()].active = groupname;
             (GROUPUSERS[client.uid()].groups).push(groupname);
         }
-        function leavegroup(client, groupname) {
+        function leaveGroup(client, groupname) {
             let groupsindex = (GROUPS[groupname].members).indexOf(client.uid());
             if (groupsindex > -1) {
                 (GROUPS[groupname].members).splice(groupsindex, 1);
@@ -175,12 +177,12 @@ registerPlugin({
                 (GROUPUSERS[client.uid()]).splice(usersindex, 1);
             }
         }
-        function setactive(client, groupname) {
+        function setActive(client, groupname) {
             GROUPUSERS[client.uid()].active = groupname;
         }
         function sendGroupMessage(client, message) {
             if (GROUPUSERS[client.uid()].active == undefined) {
-                //TODO: Send Info message
+                client.chat("Your have currently not selected a group.");
                 return false;
             }
             let currentActiveGroup = GROUPUSERS[client.uid()].active;
