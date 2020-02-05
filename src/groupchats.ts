@@ -16,7 +16,6 @@ registerPlugin({
   const engine = require("engine");
   const backend = require("backend");
   const GROUPS: any = {};
-  const GROUPLIST: [] = [];
   const GROUPUSERS: any = {};
 
   class group {
@@ -221,9 +220,9 @@ registerPlugin({
       }
 
       GROUPUSERS[client.uid()].active = undefined;
-      let usersindex = (GROUPUSERS[client.uid()]).indexOf(tempGroup.name);
+      let usersindex = (GROUPUSERS[client.uid()].groups).indexOf(tempGroup.name);
       if (usersindex > -1) {
-        (GROUPUSERS[client.uid()]).splice(usersindex, 1);
+        (GROUPUSERS[client.uid()].groups).splice(usersindex, 1);
       }
     }
 
